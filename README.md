@@ -169,11 +169,10 @@ static int snd_ctl_elem_write(struct snd_card *card, struct snd_ctl_file *file,
 }
 ```
 
-So not only can Opus not find the bug when given all of
-the code, it can't solve the problem of "Given a list of functions, is the
-lock X acquired?".
+Here Opus is failing to solve the significantly easier problem of "Given a
+list of functions, is the lock X acquired?".
 
-Things get worse if we then ask Opus to show us the code that it asserts
+Things get worse still if we then ask Opus to show us the code that it asserts
 contains the lock acquisition.
 
 ```
