@@ -92,7 +92,7 @@ examining all the code paths and their interactions.
 
 The model thinks the code is fine and does not notice the bug.
 
-# Demo 2 - Hallucinating proper lock acquisition when told where the bug is
+# Demo 2 - Hallucinating lock acquisition when told where the bug is
 
 What happens if we explicitly ask Claude to check that the appropriate lock is
 acquired on the vulnerable path?
