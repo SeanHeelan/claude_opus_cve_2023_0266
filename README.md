@@ -31,10 +31,24 @@ The first is safe as it acquires the `controls_rwsem` lock via `down_write(&card
 a path that does not include `snd_ctl_elem_write_user`, and none of the other functions on that path
 acquire the `controls_rwsem` lock.
 
-# Demo 1 - Failing to find CVE-2023-0266
+# Setup
 
 pip install the `anthropic` and `python-dotenv` packages. Copy `.env.example` to `.env` and insert your Claude 3 API
-key in it. Run via `./main.py`. You can pass the `--chat` argument to start a chat session after Opus has provided
+key in it. You can then run `main.py` and `original.py`. See below for what these files do.
+
+# Opus Finds CVE-2023-0266?
+
+I created this repository in response to [this](https://claude.ai/share/ddc7ff37-f97c-494c-b0a4-a9b3273fa23c) Claude Opus chat
+which was [shared](https://twitter.com/JasonDClinton/status/1766415668096938080) along with the claim that Opus can find CVE-2023-0266.
+If that were true then it would be a significant milestone for LLMs. Unfortunately, the bug reported by Claude is not
+CVE-2023-0266. In fact, it doesn't appear to be a bug at all, and the patch suggestd by Claude does not fix CVE-2023-0266.
+
+I've copied the prompt from that chat into `original.py`, although when run it does not provide identical results to
+those in the shared chat. Instead it produces another false positive.
+
+# Demo 1 - Failing to find CVE-2023-0266
+
+ Run via `./main.py`. You can pass the `--chat` argument to start a chat session after Opus has provided
 its initial response, which can be illustrative to figure out exactly what Claude does/does not understand about the
 code.
 

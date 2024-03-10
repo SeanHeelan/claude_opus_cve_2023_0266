@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# This file provides Claude with both the control_compat.c and control.c files,
+# both of which are necessary to identify CVE-2023-0266.
+#
 # sean@heelan.io
 
 import os
