@@ -1,5 +1,5 @@
-Demonstration that Claude 3 Opus does not understand CVE-2023-0266 and does not find it. Even if told
-where the bug is Opus does not find it, and hallucinates the presence of lock acquisitions.
+Demonstration that Claude 3 Opus does not understand CVE-2023-0266 and does not find it (Demo 1).
+Even if told where the bug is Opus does not find it, and hallucinates the presence of lock acquisitions (Demo 2).
 
 This Project Zero
 [blog post](https://googleprojectzero.blogspot.com/2023/09/analyzing-modern-in-wild-android-exploit.html) describes
