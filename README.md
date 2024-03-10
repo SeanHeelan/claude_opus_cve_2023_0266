@@ -229,7 +229,7 @@ lock, preventing concurrent access to the control elements while the write
 is being performed.
 ```
 
-Here there are two problems. First, it has completely hallucinated the presence
+Here there are two problems. First, it has hallucinated the presence
 of the `down_write` and `up_write` calls. They are not in the code it was
 given to check. Second, even if those calls were in the code they would not
 protect the code from race conditions if placed in this location.
