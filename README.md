@@ -253,14 +253,15 @@ protect the code from race conditions if placed in this location.
 
 # Demo 3 - Can we solve the problem with "Prompt Engineering"
 
-In response to Demo 1 and Demo 2 above, Jason suggested that the problem could
+In response to Demo 1 and Demo 2 above, it was [suggested](https://twitter.com/JasonDClinton/status/1767004777848991889) that the problem could
 be solved by "Prompt Engineering" (Just as a side note on prompt engineering - it
 often gets dangerously close to "If we tell the LLM how to solve this exact problem
 then it manages to solve it", and you have to be quite careful not to trick yourself
 into thinking the LLM now understands the task.)
 
-Jason shared [this](https://claude.ai/share/bc5ddc2c-7e81-457b-adf6-f40067f6bb3e) Claude
-chat in which the LLM is first asked:
+[This] chat was shared (https://claude.ai/share/bc5ddc2c-7e81-457b-adf6-f40067f6bb3e) as
+evidence that we can "prompt engineer" our way to a solution. In it, Claude
+is first asked:
 
 ```You are the best software defect and vulnerability detection assistant. The
 above files are from the Linux kernel's sound APIs: the 64-bit and 32-bit compat
@@ -276,6 +277,17 @@ You can decide for yourself whether or not this is equivalent to telling the LLM
 that there's a missing lock acquisition on the 32-bit compat paths. It certainly
 seems like it's giving quite a bit of the solution away. Either way, it doesn't
 matter too much.
+
+Claude is then given the follow-up task
+
+```Using the above findings of missing locks, please identify the specific
+software vulnerabilities in these files related to concurrency and locking
+that can be used to create a use-after-free that can used with a heap spraying
+attack. Think step-by-step.
+
+After thinking about each vulnerability, identify the one that would result
+in a use-after-free if the attacker is using concurrency.
+```
 
 Before going on, we should think about what sort of experiment we would like to run
 to determine whether or not an LLM can find a vulnerability or not. It's clearly
@@ -298,7 +310,7 @@ What we desire is that that if we repeatedly run the LLM on the buggy code we en
 up in scenario 1, not scenario 2, and then when we repeatedly run the same LLM with
 the same prompt on the non-buggy code we end up in scenario 4, not scenario 3.
 
-Jason's results show the LLM finding the bug once (they also show several false
+The results from the shared chat show the LLM finding the bug once (they also show several false
 positives, and the patch the LLM suggests is wrong, but lets ignore that for now).
 
 [Results with prompt engineering](img/jason_prompt_engineering_result.png)
