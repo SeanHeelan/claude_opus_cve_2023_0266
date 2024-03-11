@@ -264,7 +264,8 @@ yourself to a solution that relies on capabilities a model does not have.)
 evidence that we can "prompt engineer" our way to a solution. In it, Claude
 is first asked:
 
-```You are the best software defect and vulnerability detection assistant. The
+```
+You are the best software defect and vulnerability detection assistant. The
 above files are from the Linux kernel's sound APIs: the 64-bit and 32-bit compat
 versions.
 
@@ -281,7 +282,8 @@ matter too much.
 
 Claude is then given the follow-up task
 
-```Using the above findings of missing locks, please identify the specific
+```
+Using the above findings of missing locks, please identify the specific
 software vulnerabilities in these files related to concurrency and locking
 that can be used to create a use-after-free that can used with a heap spraying
 attack. Think step-by-step.
