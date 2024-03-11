@@ -293,10 +293,13 @@ in a use-after-free if the attacker is using concurrency.
 ```
 
 Before going on, we should think about what sort of experiment we would like to run
-to determine whether or not an LLM can find a vulnerability or not. It's clearly
+to determine whether or not an LLM can find a vulnerability. It's clearly
 not sufficient to just run the LLM 100 times and if it finds the vulnerability
-once then to declare it a success. What we would like is that the LLM reports the
-vulnerability in the vulnerable version of the code and does not report it in
+once then to declare it a success. That's not in any way meaningful or indicative of
+the LLM solving the problem, but is unfortunately what is often done in order to
+demonstrate capabilities.
+
+What we would like is that the LLM reports the vulnerability in the vulnerable version of the code and does not report it in
 the patched version. We would like it to get this right 100% of the time, or very
 close to it. Lower likelihoods of success will mean overwhelming false positives
 otherwise, when the tool is applied to real software of significant size.
