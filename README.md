@@ -313,7 +313,7 @@ the same prompt on the non-buggy code we end up in scenario 4, not scenario 3.
 The results from the shared chat show the LLM finding the bug once (they also show several false
 positives, and the patch the LLM suggests is wrong, but lets ignore that for now).
 
-[Results with prompt engineering](img/jason_prompt_engineering_result.png)
+![Results with prompt engineering](img/jason_prompt_engineering_result.png)
 
 Does that demonstrate that Claude understands the vulnerability and can be used to build
 a bug finding tool? Unfortunately not. If we rerun Claude through the web chat API
@@ -323,14 +323,14 @@ directory and the patched code in the `res_patched` directory. The patch fixes t
 `ctl_elem_read_user` and `ctl_elem_write_user` functions in `control_compat.c`
 by adding the required locking).
 
-[Prompt engineering false positives](img/prompt_engineering_false_negative.png)
+![Prompt engineering false positives](img/prompt_engineering_false_negative.png)
 
 So, we are at least in scenarios 1 AND 2. How about scenarios 3 and 4? Here again
 Claude ends up _sometimes_ correctly realising there are no bugs, bug more regularly
 getting things totally wrong and imagining bugs where they are not. As an example,
 here's one response:
 
-[Prompt engineering false negatives and nonsense on patched code](img/prompt_engineering_patched_nonsense.png)
+![Prompt engineering false negatives and nonsense on patched code](img/prompt_engineering_patched_nonsense.png)
 
 Point 1 is nonsensical. The `_write` function does not take the lock via `down_read`,
 and all functions that do take that lock release it correctly.
@@ -339,7 +339,7 @@ In conclusion, Claude reports bugs when there are none, misses bugs where they a
 outputs all sorts of nonsense, which becomes apparent if you rerun it multiple times
 on patched and unpatched code. Its results look like this:
 
-[Claude Results](img/claude_results.drawio.png)
+![Claude Results](img/claude_results.drawio.png)
 
 This is not useful. To be useful it needs its results to be in the green categories.
 Otherwise it is just generating plausible sounding noise that doesn't hold up to
