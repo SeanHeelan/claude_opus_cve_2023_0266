@@ -335,7 +335,8 @@ by adding the required locking).
 
 ![Prompt engineering false positives](img/prompt_engineering_false_negative.png)
 
-So, we are at least in scenarios 1 AND 2. How about scenarios 3 and 4? Here again
+So, we are at least in scenarios 1 AND 2. How about scenarios 3 and 4, when analysing
+the patched code? Here again
 Claude ends up _sometimes_ correctly realising there are no bugs, bug more regularly
 getting things totally wrong and imagining bugs where they are not. As an example,
 here's one response:
