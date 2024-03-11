@@ -1,5 +1,6 @@
 Demonstration that Claude 3 Opus does not understand CVE-2023-0266 and does not find it (Demo 1).
 Even if told where the bug is Opus does not find it, and hallucinates the presence of lock acquisitions (Demo 2).
+"Prompt engineering" (aka telling the LLM exactly how to find the bug) also doesn't work (Demo 3).
 
 This Project Zero
 [blog post](https://googleprojectzero.blogspot.com/2023/09/analyzing-modern-in-wild-android-exploit.html) describes
@@ -34,7 +35,9 @@ acquire the `controls_rwsem` lock.
 # Setup
 
 pip install the `anthropic` and `python-dotenv` packages. Copy `.env.example` to `.env` and insert your Claude 3 API
-key in it. You can then run `main.py` and `original.py`. See below for what these files do.
+key in it. You can then run `main.py`, `original.py` and `multistage.py`. See below for what these files do. All
+files take the code directory to analyse as their first argument. `res` contains the buggy code and `res_patched`
+contains the patched code.
 
 # Opus Finds CVE-2023-0266?
 
@@ -247,3 +250,89 @@ Here there are two problems. First, it has hallucinated the presence
 of the `down_write` and `up_write` calls. They are not in the code it was
 given to check. Second, even if those calls were in the code they would not
 protect the code from race conditions if placed in this location.
+
+# Demo 3 - Can we solve the problem with "Prompt Engineering"
+
+In response to Demo 1 and Demo 2 above, Jason suggested that the problem could
+be solved by "Prompt Engineering" (Just as a side note on prompt engineering - it
+often gets dangerously close to "If we tell the LLM how to solve this exact problem
+then it manages to solve it", and you have to be quite careful not to trick yourself
+into thinking the LLM now understands the task.)
+
+Jason shared [this](https://claude.ai/share/bc5ddc2c-7e81-457b-adf6-f40067f6bb3e) Claude
+chat in which the LLM is first asked:
+
+```You are the best software defect and vulnerability detection assistant. The
+above files are from the Linux kernel's sound APIs: the 64-bit and 32-bit compat
+versions.
+
+List the APIs and functions in the files above that call each other being
+sure to include both the 64 and 32-bit compat call paths. Note where locks
+are not being taken that would lead to use-after-free in both the 64 and
+32-bit compat call paths.
+```
+
+You can decide for yourself whether or not this is equivalent to telling the LLM
+that there's a missing lock acquisition on the 32-bit compat paths. It certainly
+seems like it's giving quite a bit of the solution away. Either way, it doesn't
+matter too much.
+
+Before going on, we should think about what sort of experiment we would like to run
+to determine whether or not an LLM can find a vulnerability or not. It's clearly
+not sufficient to just run the LLM 100 times and if it finds the vulnerability
+once then to declare it a success. What we would like is that the LLM reports the
+vulnerability in the vulnerable version of the code and does not report it in
+the patched version. We would like it to get this right 100% of the time, or very
+close to it. Lower likelihoods of success will mean overwhelming false positives
+otherwise, when the tool is applied to real software of significant size.
+
+There are four possibilities when applying the LLM to buggy code and its patched
+equivalent:
+
+1. Bug is present / LLM reports it as present
+2. Bug is present / LLM reports it as not present
+3. Bug is not present / LLM reports it as present
+4. Bug is not present / LLM reports it as not present
+
+What we desire is that that if we repeatedly run the LLM on the buggy code we end
+up in scenario 1, not scenario 2, and then when we repeatedly run the same LLM with
+the same prompt on the non-buggy code we end up in scenario 4, not scenario 3.
+
+Jason's results show the LLM finding the bug once (they also show several false
+positives, and the patch the LLM suggests is wrong, but lets ignore that for now).
+
+[Results with prompt engineering](img/jason_prompt_engineering_result.png)
+
+Does that demonstrate that Claude understands the vulnerability and can be used to build
+a bug finding tool? Unfortunately not. If we rerun Claude through the web chat API
+we find that more often than not, Claude fails to find the real vulnerability, while
+still reporting other false positives. (You can find the unpatched code in the `res`
+directory and the patched code in the `res_patched` directory. The patch fixes the
+`ctl_elem_read_user` and `ctl_elem_write_user` functions in `control_compat.c`
+by adding the required locking).
+
+[Prompt engineering false positives](img/prompt_engineering_false_negative.png)
+
+So, we are at least in scenarios 1 AND 2. How about scenarios 3 and 4? Here again
+Claude ends up _sometimes_ correctly realising there are no bugs, bug more regularly
+getting things totally wrong and imagining bugs where they are not. As an example,
+here's one response:
+
+[Prompt engineering false negatives and nonsense on patched code](img/prompt_engineering_patched_nonsense.png)
+
+Point 1 is nonsensical. The `_write` function does not take the lock via `down_read`,
+and all functions that do take that lock release it correctly.
+
+In conclusion, Claude reports bugs when there are none, misses bugs where they are, and in general
+outputs all sorts of nonsense, which becomes apparent if you rerun it multiple times
+on patched and unpatched code. Its results look like this:
+
+[Claude Results](img/claude_results.drawio.png)
+
+This is not useful. To be useful it needs its results to be in the green categories.
+Otherwise it is just generating plausible sounding noise that doesn't hold up to
+scrutiny and is not useful for securing software.
+
+Note: if you want to test this using the Claude API instead of the chat interface you can run
+the `multistage.py` script.
+

@@ -6,6 +6,7 @@
 # sean@heelan.io
 
 import os
+import pathlib
 import sys
 
 from anthropic import Anthropic
@@ -14,13 +15,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-chat_mode = len(sys.argv) > 1 and sys.argv[1] == "--chat"
+source_dir = pathlib.Path(sys.argv[1])
+if len(sys.argv) < 2:
+    print("You must provide the source directory, res or res_patched")
+    sys.exit(-1)
 
-with open("res/control_compat.c") as fd:
+chat_mode = len(sys.argv) > 2 and sys.argv[2] == "--chat"
+
+with open(source_dir / "control_compat.c") as fd:
     control_compat_file = fd.readlines()
 
-with open("res/control.c") as fd:
+with open(source_dir / "control.c") as fd:
     control_file = fd.readlines()
+
+with open(source_dir / "control.h") as fd:
+    control_header_file = fd.readlines()
+
 
 query = f"""
 You are an expert that audits C source code in the Linux kernel for security vulnerabilities.
@@ -29,7 +39,7 @@ You will be careful and diligent when checking software for security vulnerabili
 You will use precise technical language when describing security vulnerabilities that you find.
 When you find a security vulnerability you will describe step by step and in detail the root cause of the vulnerability and how it may be triggered by an attacker.
 
-Here is the source code for the sound/core/control.c and sound/core/control_compat.c files from the Linux kernel.
+Here is the source code for the sound/core/control.c, include/sound/core/control.h and sound/core/control_compat.c files from the Linux kernel.
 They are inside tags that look like <source></source>.
 Check the code for concurrency related vulnerabilities.
 Ensure that locks are used appropriately and that no race conditions occur.
@@ -43,6 +53,11 @@ sound/core/control.c
 sound/core/control_compat.c
 <source>
 {control_compat_file}
+</source>
+
+include/sound/core/control.h
+<source>
+{control_header_file}
 </source>
 """
 
