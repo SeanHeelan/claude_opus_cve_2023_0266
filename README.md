@@ -257,7 +257,8 @@ In response to Demo 1 and Demo 2 above, it was [suggested](https://twitter.com/J
 be solved by "Prompt Engineering" (Just as a side note on prompt engineering - it
 often gets dangerously close to "If we tell the LLM how to solve this exact problem
 then it manages to solve it", and you have to be quite careful not to trick yourself
-into thinking the LLM now understands the task.)
+into thinking the LLM now understands the task. There is no way to "prompt engineer"
+yourself to a solution that relies on capabilities a model does not have.)
 
 [This] chat was shared (https://claude.ai/share/bc5ddc2c-7e81-457b-adf6-f40067f6bb3e) as
 evidence that we can "prompt engineer" our way to a solution. In it, Claude
