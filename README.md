@@ -312,9 +312,13 @@ equivalent:
 3. Bug is not present / LLM reports it as present
 4. Bug is not present / LLM reports it as not present
 
+
 What we desire is that that if we repeatedly run the LLM on the buggy code we end
 up in scenario 1, not scenario 2, and then when we repeatedly run the same LLM with
-the same prompt on the non-buggy code we end up in scenario 4, not scenario 3.
+the same prompt on the non-buggy code we end up in scenario 4, not scenario 3. Put
+another way, we want our results to fall into the green squares in this diagram.
+
+![Results possibilities](img/square.drawio.png)
 
 The results from the shared chat show the LLM finding the bug once (they also show several false
 positives, and the patch the LLM suggests is wrong, but lets ignore that for now).
