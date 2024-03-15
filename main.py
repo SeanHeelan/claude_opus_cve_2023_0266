@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+TEMPERATURE = 0.0
+
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 source_dir = pathlib.Path(sys.argv[1])
 if len(sys.argv) < 2:
@@ -88,6 +90,7 @@ while True:
     message = client.messages.create(
         max_tokens=4096,
         messages=messages,
+        temperature=TEMPERATURE,
         model="claude-3-opus-20240229",
     )
 

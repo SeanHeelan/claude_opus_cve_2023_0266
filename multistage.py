@@ -20,6 +20,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+TEMPERATURE = 0.0
+
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 source_dir = pathlib.Path(sys.argv[1])
 if len(sys.argv) < 2:
@@ -87,7 +89,8 @@ message = client.messages.create(
     max_tokens=4096,
     messages=messages,
     model="claude-3-opus-20240229",
-    system=system_prompt
+    system=system_prompt,
+    temperature=TEMPERATURE
 )
 
 for line in message.content[0].text.split("\n"):
@@ -101,7 +104,8 @@ message = client.messages.create(
     max_tokens=4096,
     messages=messages,
     model="claude-3-opus-20240229",
-    system=system_prompt
+    system=system_prompt,
+    temperature=TEMPERATURE
 )
 
 for line in message.content[0].text.split("\n"):
@@ -119,7 +123,8 @@ while True:
         max_tokens=4096,
         messages=messages,
         model="claude-3-opus-20240229",
-        system=system_prompt
+        system=system_prompt,
+        temperature=TEMPERATURE
     )
 
     for line in message.content[0].text.split("\n"):
