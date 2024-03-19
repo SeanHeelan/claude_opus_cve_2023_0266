@@ -55,7 +55,7 @@ those in the shared chat. Instead it produces another false positive.
 its initial response, which can be illustrative to figure out exactly what Claude does/does not understand about the
 code.
 
-As of today (March 10th 2023) this is what Claude Opus (model version `claude-3-opus-20240229`):
+As of today (March 10th 2024) this is what Claude Opus (model version `claude-3-opus-20240229`):
 
 ```
 The code in sound/core/control.c and sound/core/control_compat.c appears to use
